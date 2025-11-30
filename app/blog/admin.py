@@ -11,9 +11,9 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'publication_date', 'is_published')
+    list_display = ('title', 'publication_date', 'is_published')
     list_filter = ('is_published', 'category')
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('author', 'article')
+    list_display = ('article', 'publication_date')

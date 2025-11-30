@@ -23,17 +23,12 @@ class Tag(models.Model):
 
 class Article(models.Model):
     title = models.CharField(max_length=255)
-
-    # Зв'язок з користувачем Django. Може бути null (якщо автор видалений або анонім)
     author_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='articles')
-    # Текстове поле для збереження імені (на випадок анонімів)
     author_name = models.CharField(max_length=255, blank=True)
-
     text = models.TextField()
     image = models.CharField(max_length=500, blank=True)
     publication_date = models.DateField(auto_now_add=True)
     is_published = models.BooleanField(default=False)
-
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="articles")
     tag = models.ManyToManyField(Tag, blank=True)
 
@@ -48,11 +43,8 @@ class Article(models.Model):
 
 class Comment(models.Model):
     text = models.TextField()
-
-    # Коментар теж може мати прив'язку до юзера
     author_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     author_name = models.CharField(max_length=255, blank=True)
-
     publication_date = models.DateField(auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
 
