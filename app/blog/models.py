@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -22,10 +23,15 @@ class Tag(models.Model):
 
 class Article(models.Model):
     title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255)
+
+    # Зв'язок з користувачем Django. Може бути null (якщо автор видалений або анонім)
+    author_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='articles')
+    # Текстове поле для збереження імені (на випадок анонімів)
+    author_name = models.CharField(max_length=255, blank=True)
+
     text = models.TextField()
     image = models.CharField(max_length=500, blank=True)
-    publication_date = models.DateField()
+    publication_date = models.DateField(auto_now_add=True)
     is_published = models.BooleanField(default=False)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="articles")
@@ -34,12 +40,26 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
+    def get_author(self):
+        if self.author_user:
+            return self.author_user.username
+        return self.author_name or "Anonymous"
+
 
 class Comment(models.Model):
     text = models.TextField()
-    author = models.CharField(max_length=255)
+
+    # Коментар теж може мати прив'язку до юзера
+    author_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    author_name = models.CharField(max_length=255, blank=True)
+
     publication_date = models.DateField(auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
 
     def __str__(self):
-        return f"Comment by {self.author}"
+        return f"Comment by {self.get_author()}"
+
+    def get_author(self):
+        if self.author_user:
+            return self.author_user.username
+        return self.author_name or "Anonymous"

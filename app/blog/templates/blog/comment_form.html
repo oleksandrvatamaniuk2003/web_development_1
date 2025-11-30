@@ -1,0 +1,10 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h2>Редагувати коментар</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background: #333; color: white; padding: 10px;">Зберегти зміни</button>
+    </form>
+{% endblock %}

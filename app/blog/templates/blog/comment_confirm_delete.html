@@ -1,0 +1,12 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h2>Ви впевненіщо хочете видалити цей коментар?</h2>
+    <p style="background: #eee; padding: 10px; font-style: italic;">"{{ comment.text }}"</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" style="background: red; color: white; padding: 10px; border: none; cursor: pointer;">Так, видалти</button>
+        <a href="{% url 'article_detail' comment.article.pk %}" style="margin-left: 20px;">Скасувати</a>
+    </form>
+{% endblock %}

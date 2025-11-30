@@ -2,33 +2,48 @@
 
 {% block content %}
     <h1>{{ article.title }}</h1>
-    <p class="meta">
-        Опубліковано: {{ article.publication_date }} |
-        Категорія: <i class="{{ article.category.icon }}"></i> {{ article.category.title }}
+    <p>
+        <i class="{{ article.category.icon }}"></i> {{ article.category.title }} |
+        {{ article.publication_date }} |
+        Автор: <strong>{{ article.get_author }}</strong>
     </p>
 
     {% if article.image %}
-        <img src="{{ article.image }}" class="article-img" alt="Main Image">
+        <img src="{{ article.image }}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
     {% endif %}
 
-    <div style="font-size: 1.1rem; line-height: 1.6; margin: 20px 0;">
+    <div style="margin-bottom: 30px; font-size: 1.1em; line-height: 1.6;">
         {{ article.text|linebreaks }}
     </div>
 
-    <p><strong>Теги:</strong>
-        {% for tag in article.tag.all %}
-            <span style="background:#eee; padding:2px 6px; border-radius:4px; font-size:0.9rem;">#{{ tag.title }}</span>
-        {% endfor %}
-    </p>
-
     <hr>
-    <h3><i class="fa-regular fa-comments"></i> Коментарі ({{ comments.count }})</h3>
+
+    <h3>Залишити коментар</h3>
+    <form method="post" style="margin-bottom: 30px; background: #eee; padding: 15px; border-radius: 5px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background: #333; color: white; border: none; padding: 8px 15px; cursor: pointer;">Надіслати</button>
+    </form>
+
+    <h3>Коментарі ({{ comments.count }})</h3>
     {% for comment in comments %}
-        <div class="comment">
-            <strong>{{ comment.author }}</strong> <span style="color:#888; font-size:0.8rem;">{{ comment.publication_date }}</span>
-            <p style="margin: 5px 0 0;">{{ comment.text }}</p>
+        <div style="background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-left: 4px solid #333;">
+            <p style="margin: 0 0 5px;">
+                <strong>{{ comment.get_author }}</strong>
+                <span style="color: #777; font-size: 0.9em;">{{ comment.publication_date }}</span>
+            </p>
+            <p style="margin: 0;">{{ comment.text }}</p>
+
+            {% if user.is_authenticated %}
+                {% if user == comment.author_user or user.groups.first.name == 'Moderator' %}
+                    <div style="margin-top: 10px; font-size: 0.9em;">
+                        <a href="{% url 'comment_edit' comment.pk %}">[Редагувати]</a>
+                        <a href="{% url 'comment_delete' comment.pk %}" style="color: red;">[Видалити]</a>
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
     {% empty %}
-        <p>Коментарів ще немає. Будьте першим!</p>
+        <p>Коментарів поки немає.</p>
     {% endfor %}
 {% endblock %}

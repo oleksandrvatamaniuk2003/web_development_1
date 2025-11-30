@@ -2,39 +2,39 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мій Блог</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Blog Project</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
-        header { background-color: #333; color: #fff; padding: 1rem 0; }
-        nav { max-width: 900px; margin: 0 auto; display: flex; gap: 20px; padding: 0 20px; }
-        nav a { color: #fff; text-decoration: none; font-weight: bold; font-size: 1.1rem; }
-        nav a:hover { color: #f39c12; }
-        .container { max-width: 900px; margin: 20px auto; padding: 0 20px; background: white; min-height: 80vh; padding-top: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .card { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; background: #fff; }
-        .card h2 { margin-top: 0; }
-        .meta { color: #777; font-size: 0.9rem; margin-bottom: 10px; display: block; }
-        .btn { display: inline-block; background: #333; color: #fff; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin-top: 10px; }
-        .btn:hover { background: #555; }
-        img.article-img { max-width: 100%; height: auto; border-radius: 5px; margin: 10px 0; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
-        .comment { background: #f9f9f9; padding: 10px; margin-bottom: 10px; border-left: 3px solid #333; }
+        body{padding:20px; font-family:sans-serif; max-width: 900px; margin: 0 auto;}
+        nav { background: #f8f9fa; padding: 15px; border-bottom: 1px solid #ddd; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;}
+        nav a{margin-right:15px; text-decoration: none; color: #333; font-weight: bold;}
+        .auth-links { font-size: 0.9em; }
+        .auth-links button { background: none; border: none; color: #d9534f; cursor: pointer; text-decoration: underline; font-size: 1em; padding: 0;}
     </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Головна</a>
-            <a href="{% url 'article_list' %}"><i class="fa-solid fa-newspaper"></i> Всі статті</a>
-            <a href="{% url 'category_list' %}"><i class="fa-solid fa-list"></i> Категорії</a>
-            <a href="/admin" target="_blank"><i class="fa-solid fa-user-gear"></i> Адмінка</a>
-        </nav>
-    </header>
+    <nav>
+        <div class="main-links">
+            <a href="{% url 'home' %}">Головна</a>
+            <a href="{% url 'article_list' %}">Всі статті</a>
+            <a href="{% url 'category_list' %}">Категорії</a>
+            <a href="/admin">Admin</a>
+        </div>
 
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
+        <div class="auth-links">
+            {% if user.is_authenticated %}
+                <span><i class="fa-solid fa-user"></i> {{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 10px;">
+                    {% csrf_token %}
+                    <button type="submit">Вийти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Вхід</a>
+                <a href="{% url 'signup' %}">Реєстрація</a>
+            {% endif %}
+        </div>
+    </nav>
+    <hr>
+    {% block content %}{% endblock %}
 </body>
 </html>
