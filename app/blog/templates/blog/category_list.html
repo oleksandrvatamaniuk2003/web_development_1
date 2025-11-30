@@ -1,0 +1,15 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+    <h1>Категорії</h1>
+    <ul style="list-style: none; padding: 0;">
+    {% for cat in categories %}
+        <li class="card" style="display: flex; align-items: center; gap: 15px;">
+            <i class="{{ cat.icon }} fa-2x"></i>
+            <div>
+                <h3>{{ cat.title }}</h3>
+                <p>{{ cat.description }}</p>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

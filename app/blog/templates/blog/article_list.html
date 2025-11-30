@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h1><i class="fa-solid fa-layer-group"></i> Всі публікації</h1>
+    <hr>
+    {% for article in articles %}
+        <div class="card">
+            <div style="display:flex; gap:20px; align-items: flex-start;">
+                {% if article.image %}
+                    <img src="{{ article.image }}" alt="img" style="width:150px; height:100px; object-fit:cover; border-radius:5px;">
+                {% endif %}
+                <div>
+                    <h2><a href="{% url 'article_detail' article.pk %}" style="color:#333;">{{ article.title }}</a></h2>
+                    <span class="meta">{{ article.publication_date }}</span>
+                    <p>{{ article.text|truncatewords:25 }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

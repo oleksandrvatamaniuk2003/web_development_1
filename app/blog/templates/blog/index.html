@@ -1,0 +1,20 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+    <h1><i class="fa-solid fa-fire"></i> Останні новини</h1>
+    <hr>
+    {% for article in latest_articles %}
+        <div class="card">
+            <h2><a href="{% url 'article_detail' article.pk %}" style="text-decoration:none; color:#333;">{{ article.title }}</a></h2>
+            <span class="meta">
+                <i class="fa-regular fa-calendar"></i> {{ article.publication_date }} |
+                <i class="fa-solid fa-user"></i> {{ article.author }} |
+                <i class="{{ article.category.icon }}"></i> {{ article.category.title }}
+            </span>
+            <p>{{ article.text|truncatewords:30 }}</p>
+            <a href="{% url 'article_detail' article.pk %}" class="btn">Читати далі &rarr;</a>
+        </div>
+    {% empty %}
+        <p>На жаль, статей поки немає.</p>
+    {% endfor %}
+{% endblock %}
